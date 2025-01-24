@@ -1,4 +1,11 @@
+import { useSelector, useDispatch } from 'react-redux';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { v4 as uuidv4 } from 'uuid';
 
+import {useHttp} from '../../hooks/http.hook';
+import Spinner from '../spinner/Spinner';
+import { dataFetching, dataFetchingError, heroAdded } from '../../actions';
 
 // Задача для этого компонента:
 // Реализовать создание нового героя с введенными данными. Он должен попадать
@@ -11,47 +18,97 @@
 // данных из фильтров
 
 const HeroesAddForm = () => {
+    const {filters, dataLoadingStatus} = useSelector(state => state);
+    const dispatch = useDispatch();
+    const {request} = useHttp();
+
+    const onSaveNewHero = (hero) => {
+        hero['id'] = uuidv4;
+
+        dispatch(dataFetching());
+        request("http://localhost:3001/heroes", "POST", JSON.stringify(hero))
+            .then(data => dispatch(heroAdded(hero)))
+            .catch(() => dispatch(dataFetchingError()));
+    }
+
+    if (dataLoadingStatus === "loading") {
+        return <Spinner/>;
+    } else if (dataLoadingStatus === "error") {
+        return <h5 className="text-center mt-5">Ошибка загрузки</h5>
+    }
+
+    const filterOptions = filters.filter(item => item.id !== "all")
+                                 .map(({id, name}, i) => <option key={i} value={id}>{name}</option>);
+
+    filterOptions.unshift(<option key={filterOptions.length}>Я владею элементом...</option>);
+
     return (
-        <form className="border p-4 shadow-lg rounded">
-            <div className="mb-3">
-                <label htmlFor="name" className="form-label fs-4">Имя нового героя</label>
-                <input 
-                    required
-                    type="text" 
-                    name="name" 
-                    className="form-control" 
-                    id="name" 
-                    placeholder="Как меня зовут?"/>
-            </div>
+        <Formik
+            initialValues={{
+                name: '',
+                description: '',
+                element: ''
+            }}
+            validationSchema={
+                Yup.object({
+                    name: Yup.string().required('Required value!'),
+                    description: Yup.string().required('Required value!'),
+                    element: Yup.string()
+                        .required('Required value!')
+                        .oneOf(["fire", "water", "wind", "earth" ], 'Check element!'),
+                })
+            }
+            onSubmit={values => {
+                    console.log(JSON.stringify(values, null, 2))
+                    onSaveNewHero(values)
+                }
+            }
+            validateOnChange={false}
+            validateOnBlur={false}
+        >
+            <Form className="border p-4 shadow-lg rounded">
+                <div className="mb-3">
+                    <label htmlFor="name" className="form-label fs-4">Имя нового героя</label>
+                    <Field
+                        required
+                        type="text"
+                        name="name"
+                        className="form-control"
+                        id="name"
+                        placeholder="Как меня зовут?"/>
+                    <ErrorMessage className="error" name="name" component="div" />
+                </div>
 
-            <div className="mb-3">
-                <label htmlFor="text" className="form-label fs-4">Описание</label>
-                <textarea
-                    required
-                    name="text" 
-                    className="form-control" 
-                    id="text" 
-                    placeholder="Что я умею?"
-                    style={{"height": '130px'}}/>
-            </div>
+                <div className="mb-3">
+                    <label htmlFor="text" className="form-label fs-4">Описание</label>
+                    <Field
+                        required
+                        name="description"
+                        className="form-control"
+                        id="description"
+                        placeholder="Что я умею?"
+                        style={{"height": '130px'}}
+                        as="textarea"
+                    />
+                    <ErrorMessage className="error" name="description" component="div" />
+                </div>
 
-            <div className="mb-3">
-                <label htmlFor="element" className="form-label">Выбрать элемент героя</label>
-                <select 
-                    required
-                    className="form-select" 
-                    id="element" 
-                    name="element">
-                    <option >Я владею элементом...</option>
-                    <option value="fire">Огонь</option>
-                    <option value="water">Вода</option>
-                    <option value="wind">Ветер</option>
-                    <option value="earth">Земля</option>
-                </select>
-            </div>
-
-            <button type="submit" className="btn btn-primary">Создать</button>
-        </form>
+                <div className="mb-3">
+                    <label htmlFor="element" className="form-label">Выбрать элемент героя</label>
+                    <Field
+                        required
+                        className="form-select"
+                        id="element"
+                        name="element"
+                        as='select'
+                    >
+                        {filterOptions}
+                    </Field>
+                    <ErrorMessage className="error" name="element" component="div" />
+                </div>
+                <button type="submit" className="btn btn-primary">Создать</button>
+            </Form>
+        </Formik>
     )
 }
 

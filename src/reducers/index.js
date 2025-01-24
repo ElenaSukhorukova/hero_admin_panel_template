@@ -1,26 +1,33 @@
 const initialState = {
     heroes: [],
-    heroesLoadingStatus: 'idle',
-    filters: []
+    dataLoadingStatus: 'idle',
+    filters: [],
+    activeFilter: 'all'
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'HEROES_FETCHING':
+        case 'DATA_FETCHING':
             return {
                 ...state,
-                heroesLoadingStatus: 'loading'
+                dataLoadingStatus: 'loading'
             }
         case 'HEROES_FETCHED':
             return {
                 ...state,
                 heroes: action.payload,
-                heroesLoadingStatus: 'idle'
+                dataLoadingStatus: 'idle'
             }
+        case 'FILTERS_FETCHED':
+        return {
+            ...state,
+            filters: action.payload,
+            dataLoadingStatus: 'idle'
+        }
         case 'HERO_DELETING':
             return {
                 ...state,
-                heroesLoadingStatus: 'loading'
+                dataLoadingStatus: 'loading'
             }
 
         case 'HERO_DELETED':
@@ -31,12 +38,23 @@ const reducer = (state = initialState, action) => {
             return {
                 ...state,
                 heroes: [...filteredHeroes],
-                heroesLoadingStatus: 'idle'
+                dataLoadingStatus: 'idle'
             }
-        case 'HEROES_FETCHING_ERROR':
+        case 'HERO_ADDED':
             return {
                 ...state,
-                heroesLoadingStatus: 'error'
+                heroes: [...state.heroes, action.payload],
+                dataLoadingStatus: 'idle'
+            }
+        case 'ACTIVE_FILTER_CHENGED':
+        return {
+            ...state,
+            activeFilter: action.payload
+        }
+        case 'DATA_FETCHING_ERROR':
+            return {
+                ...state,
+                dataLoadingStatus: 'error'
             }
         default: return state
     }
