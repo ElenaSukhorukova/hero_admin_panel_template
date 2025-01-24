@@ -2,14 +2,9 @@ import {useHttp} from '../../hooks/http.hook';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { heroesFetching, heroesFetched, heroesFetchingError } from '../../actions';
+import { heroesFetching, heroesFetched, heroesFetchingError, heroDeleting, heroDeleted } from '../../actions';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
-
-// Задача для этого компонента:
-// При клике на "крестик" идет удаление персонажа из общего состояния
-// Усложненная задача:
-// Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
     const {heroes, heroesLoadingStatus} = useSelector(state => state);
@@ -25,6 +20,17 @@ const HeroesList = () => {
         // eslint-disable-next-line
     }, []);
 
+    // Задача для этого компонента:
+    // При клике на "крестик" идет удаление персонажа из общего состояния
+    // Усложненная задача:
+    // Удаление идет и с json файла при помощи метода DELETE
+	const onDelete = (heroId) => {
+        dispatch(heroDeleting());
+        request(`http://localhost:3001/heroes/${heroId}`, 'DELETE')
+            .then(data => dispatch(heroDeleted(heroId)))
+            .catch(() => dispatch(heroesFetchingError()))
+	}
+
     if (heroesLoadingStatus === "loading") {
         return <Spinner/>;
     } else if (heroesLoadingStatus === "error") {
@@ -36,8 +42,9 @@ const HeroesList = () => {
             return <h5 className="text-center mt-5">Героев пока нет</h5>
         }
 
-        return arr.map(({id, ...props}) => {
-            return <HeroesListItem key={id} {...props}/>
+        return arr.map(props => {
+            const id = props.id
+            return <HeroesListItem key={id} {...props} onDelete={onDelete}/>
         })
     }
 
