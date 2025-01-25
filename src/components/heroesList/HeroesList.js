@@ -53,9 +53,10 @@ const HeroesList = () => {
             return <h5 className="text-center mt-5">Героев пока нет</h5>
         }
 
+        let duration = 3;
         return arr.map(props => {
             const id = props.id
-            return <HeroesListItem key={id} {...props} onDelete={onDelete}/>
+            return <HeroesListItem key={id} {...props} duration={duration += 1} onDelete={onDelete}/>
         })
     }
 

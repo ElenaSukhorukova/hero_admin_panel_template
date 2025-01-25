@@ -23,7 +23,7 @@ const HeroesAddForm = () => {
     const {request} = useHttp();
 
     const onSaveNewHero = (hero) => {
-        hero['id'] = uuidv4;
+        hero['id'] = uuidv4();
 
         dispatch(dataFetching());
         request("http://localhost:3001/heroes", "POST", JSON.stringify(hero))

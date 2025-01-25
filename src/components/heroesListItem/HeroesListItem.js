@@ -1,4 +1,6 @@
-const HeroesListItem = ({ id, name, description, element, onDelete }) => {
+import { motion } from "motion/react";
+
+const HeroesListItem = ({ id, name, description, element, onDelete, duration }) => {
 	let elementClassName;
 
 	switch (element) {
@@ -19,7 +21,10 @@ const HeroesListItem = ({ id, name, description, element, onDelete }) => {
 	}
 
 	return (
-		<li
+		<motion.li
+		  initial={{opacity: 0}}
+    	animate={{opacity: 1}}
+			transition={{duration: duration}}
 			className={`card flex-row mb-4 shadow-lg text-white ${elementClassName}`}
 		>
 			<img
@@ -40,7 +45,7 @@ const HeroesListItem = ({ id, name, description, element, onDelete }) => {
 					onClick={() => onDelete(id)}
 				></button>
 			</span>
-		</li>
+		</motion.li>
 	);
 };
 
