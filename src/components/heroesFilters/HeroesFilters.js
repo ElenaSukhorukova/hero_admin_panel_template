@@ -16,10 +16,6 @@ const HeroesFilters = () => {
     const {filters, activeFilter, dataLoadingStatus} = useSelector(state => state);
     const dispatch = useDispatch();
 
-    const onFilter = (filterName) => {
-        dispatch(activeFilterChanged(filterName));
-    }
-
     if (dataLoadingStatus === "loading") {
         return <Spinner/>;
     } else if (dataLoadingStatus === "error") {
@@ -33,7 +29,7 @@ const HeroesFilters = () => {
                     key={i}
                     className={className}
                     aria-pressed="true"
-                    onClick={() => onFilter(id)}
+                    onClick={() => dispatch(activeFilterChanged(id))}
                 >{name}</button>
     });
 
