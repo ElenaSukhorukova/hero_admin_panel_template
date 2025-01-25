@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {useHttp} from '../../hooks/http.hook';
 import Spinner from '../spinner/Spinner';
-import { dataFetching, dataFetchingError, heroAdded } from '../../actions';
+import { heroesFetching, heroesFetchingError, heroAdded } from '../../actions';
 
 // Задача для этого компонента:
 // Реализовать создание нового героя с введенными данными. Он должен попадать
@@ -18,22 +18,22 @@ import { dataFetching, dataFetchingError, heroAdded } from '../../actions';
 // данных из фильтров
 
 const HeroesAddForm = () => {
-    const {filters, dataLoadingStatus} = useSelector(state => state);
+    const {filters, filtersLoadingStatus} = useSelector(state => state.filters);
     const dispatch = useDispatch();
     const {request} = useHttp();
 
     const onSaveNewHero = (hero) => {
         hero['id'] = uuidv4();
 
-        dispatch(dataFetching());
+        dispatch(heroesFetching());
         request("http://localhost:3001/heroes", "POST", JSON.stringify(hero))
             .then(data => dispatch(heroAdded(hero)))
-            .catch(() => dispatch(dataFetchingError()));
+            .catch(() => dispatch(heroesFetchingError()));
     }
 
-    if (dataLoadingStatus === "loading") {
+    if (filtersLoadingStatus === "loading") {
         return <Spinner/>;
-    } else if (dataLoadingStatus === "error") {
+    } else if (filtersLoadingStatus === "error") {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 
@@ -58,11 +58,17 @@ const HeroesAddForm = () => {
                         .oneOf(["fire", "water", "wind", "earth" ], 'Check element!'),
                 })
             }
-            onSubmit={values => {
-                    console.log(JSON.stringify(values, null, 2))
-                    onSaveNewHero(values)
-                }
-            }
+            onSubmit={(values, actions) => {
+                onSaveNewHero(values)
+                actions.setSubmitting(false)
+                actions.resetForm({
+                    values: {
+                        name: '',
+                        description: '',
+                        element: ''
+                    }
+                })
+            }}
             validateOnChange={false}
             validateOnBlur={false}
         >

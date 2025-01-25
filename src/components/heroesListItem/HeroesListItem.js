@@ -1,6 +1,6 @@
 import { motion } from "motion/react";
 
-const HeroesListItem = ({ id, name, description, element, onDelete, duration }) => {
+const HeroesListItem = ({ name, description, element, onDelete, duration }) => {
 	let elementClassName;
 
 	switch (element) {

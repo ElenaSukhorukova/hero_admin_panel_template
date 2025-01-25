@@ -13,12 +13,12 @@ import { activeFilterChanged } from '../../actions';
 // Представьте, что вы попросили бэкенд-разработчика об этом
 
 const HeroesFilters = () => {
-    const {filters, activeFilter, dataLoadingStatus} = useSelector(state => state);
+    const {filters, activeFilter, filtersLoadingStatus} = useSelector(state => state.filters);
     const dispatch = useDispatch();
 
-    if (dataLoadingStatus === "loading") {
+    if (filtersLoadingStatus === "loading") {
         return <Spinner/>;
-    } else if (dataLoadingStatus === "error") {
+    } else if (filtersLoadingStatus === "error") {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 

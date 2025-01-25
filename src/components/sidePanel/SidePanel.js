@@ -6,7 +6,7 @@ import {useHttp} from '../../hooks/http.hook';
 import HeroesAddForm from '../heroesAddForm/HeroesAddForm';
 import HeroesFilters from '../heroesFilters/HeroesFilters';
 
-import { dataFetching, filtersFetched, dataFetchingError } from '../../actions';
+import { filtersFetching, filtersFetched, filtersFetchingError } from '../../actions';
 
 import './sidePanel.scss';
 
@@ -15,10 +15,10 @@ const SidePanel = () => {
   const {request} = useHttp();
 
   useEffect(() => {
-    dispatch(dataFetching());
+    dispatch(filtersFetching());
         request("http://localhost:3001/filters")
             .then(data => dispatch(filtersFetched(data)))
-            .catch(() => dispatch(dataFetchingError()));
+            .catch(() => dispatch(filtersFetchingError()));
 
         // eslint-disable-next-line
     }, []);

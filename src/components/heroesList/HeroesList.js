@@ -1,21 +1,29 @@
 import {useHttp} from '../../hooks/http.hook';
 import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { createSelector } from '@reduxjs/toolkit'
 
-import { dataFetching, heroesFetched, dataFetchingError, heroDeleting, heroDeleted } from '../../actions';
+import { heroesFetching, heroesFetched, heroesFetchingError, heroDeleting, heroDeleted } from '../../actions';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
 const HeroesList = () => {
-    const {filteredHeroes, dataLoadingStatus} = useSelector(state => state);
+    const filteredHeroesSelector = createSelector(
+        state => state.filters.activeFilter,
+        state => state.heroes.heroes,
+        (filter, heroes) => filter === 'all' ? heroes : heroes.filter(hero => hero.element === filter)
+    )
+    const filteredHeroes = useSelector(filteredHeroesSelector);
+
+    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
     const dispatch = useDispatch();
     const {request} = useHttp();
 
     useEffect(() => {
-        dispatch(dataFetching());
+        dispatch(heroesFetching());
         request("http://localhost:3001/heroes")
             .then(data => dispatch(heroesFetched(data)))
-            .catch(() => dispatch(dataFetchingError()));
+            .catch(() => dispatch(heroesFetchingError()));
 
         // eslint-disable-next-line
     }, []);
@@ -28,13 +36,13 @@ const HeroesList = () => {
         dispatch(heroDeleting());
         request(`http://localhost:3001/heroes/${heroId}`, 'DELETE')
             .then(data => dispatch(heroDeleted(heroId)))
-            .catch(() => dispatch(dataFetchingError()));
+            .catch(() => dispatch(heroesFetchingError()));
         // eslint-disable-next-line
 	}, [request])
 
-    if (dataLoadingStatus === "loading") {
+    if (heroesLoadingStatus === "loading") {
         return <Spinner/>;
-    } else if (dataLoadingStatus === "error") {
+    } else if (heroesLoadingStatus === "error") {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 
