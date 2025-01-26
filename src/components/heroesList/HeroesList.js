@@ -3,7 +3,7 @@ import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit'
 
-import { heroesFetching, heroesFetched, heroesFetchingError, heroDeleting, heroDeleted } from '../../actions';
+import { fetchHeroes, deleteHero } from '../../actions';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
@@ -20,11 +20,7 @@ const HeroesList = () => {
     const {request} = useHttp();
 
     useEffect(() => {
-        dispatch(heroesFetching());
-        request("http://localhost:3001/heroes")
-            .then(data => dispatch(heroesFetched(data)))
-            .catch(() => dispatch(heroesFetchingError()));
-
+        dispatch(fetchHeroes(request));
         // eslint-disable-next-line
     }, []);
 
@@ -33,10 +29,7 @@ const HeroesList = () => {
     // Усложненная задача:
     // Удаление идет и с json файла при помощи метода DELETE
 	const onDelete = useCallback((heroId) => {
-        dispatch(heroDeleting());
-        request(`http://localhost:3001/heroes/${heroId}`, 'DELETE')
-            .then(data => dispatch(heroDeleted(heroId)))
-            .catch(() => dispatch(heroesFetchingError()));
+        dispatch(deleteHero(request, heroId))
         // eslint-disable-next-line
 	}, [request])
 
