@@ -1,3 +1,11 @@
+import {
+    heroesFetching,
+    heroesFetched,
+    heroesFetchingError,
+    heroDeleting,
+    heroDeleted
+} from '../components/heroesList/heroesSlice'
+
 export const fetchHeroes = (request) => (dispatch) => {
     dispatch(heroesFetching());
     request("http://localhost:3001/heroes")
@@ -18,45 +26,6 @@ export const fetchFilters = (request) => (dispatch) => {
     request("http://localhost:3001/filters")
         .then(data => dispatch(filtersFetched(data)))
         .catch(() => dispatch(filtersFetchingError()));
-}
-
-export const heroesFetching = () => {
-    return {
-        type: 'HEROES_FETCHING'
-    }
-}
-
-export const heroesFetched = (heroes) => {
-    return {
-        type: 'HEROES_FETCHED',
-        payload: heroes
-    }
-}
-
-export const heroesFetchingError = () => {
-    return {
-        type: 'HEROES_FETCHING_ERROR'
-    }
-}
-
-export const heroDeleting = () => {
-    return {
-        type: 'HERO_DELETING'
-    }
-}
-
-export const heroDeleted = (heroId) => {
-    return {
-        type: 'HERO_DELETED',
-        payload: heroId
-    }
-}
-
-export const heroAdded = (hero) => {
-    return {
-        type: 'HERO_ADDED',
-        payload: hero
-    }
 }
 
 export const filtersFetching = () => {
@@ -84,12 +53,3 @@ export const activeFilterChanged = (filter) => {
         payload: filter
     }
 }
-
-// export const activeFilterChanged = (filter) => (dispatch) => {
-//     setTimeout(() => {
-//         dispatch({
-//             type: 'ACTIVE_FILTER_CHENGED',
-//             payload: filter
-//         })
-//     }, 1000)
-// }

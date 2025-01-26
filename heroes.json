@@ -19,10 +19,10 @@
       "element": "water"
     },
     {
-      "name": "Hero",
-      "description": "I'm a hero!",
-      "element": "earth",
-      "id": "1797b381-3304-46b4-a2bb-43111996e382"
+      "name": "New Hero",
+      "description": "I'm the best worker",
+      "element": "fire",
+      "id": "c9ba5378-c453-456e-a06e-a2d4b1da6258"
     }
   ],
   "filters": [

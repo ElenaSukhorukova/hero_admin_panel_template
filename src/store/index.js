@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
-// import { thunk } from 'redux-thunk';
-import heroes from '../reducers/heroes';
+
+import heroes from '../components/heroesList/heroesSlice';
 import filters from '../reducers/filters';
 
 const stringMiddleware = () => next => action =>{
@@ -11,24 +11,10 @@ const stringMiddleware = () => next => action =>{
     return next(action);
 }
 
-// const enhancer = store => next => action =>{
-//     const oldDispatch = store.dispatch;
-
-//     store.dispatch = (action) => {
-//         if (typeof action === 'string') {
-//             return oldDispatch({
-//                 type: action
-//             });
-//         }
-//     }
-
-//     return next(action);
-// }
-
 const store = configureStore({
     reducer: {heroes, filters},
-    devTools: ProcessingInstruction.env.NODE_ENV !== 'production',
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(stringMiddleware) // .concat(enhancer) .concat(thunk)
+    devTools: process.env.NODE_ENV !== 'production',
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(stringMiddleware)
 });
 
 export default store;
