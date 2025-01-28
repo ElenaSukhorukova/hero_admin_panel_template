@@ -25,14 +25,15 @@ const heroesSlice = createSlice({
             state.heroes = state.heroes.filter((item) => item.id !== action.payload);
         },
         heroAdded: (state, action) => {
+            state.heroesLoadingStatus = 'idle';
             state.heroes.push(action.payload);
         }
     }
 });
 
-const {actions, reducers} = heroesSlice;
+const {actions, reducer} = heroesSlice;
 
-export default reducers;
+export default reducer;
 
 export const {
     heroesFetching,

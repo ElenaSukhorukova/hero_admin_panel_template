@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import Spinner from '../spinner/Spinner';
 
-import { activeFilterChanged } from '../../actions';
+import { activeFilterChanged } from '../heroesFilters/filtersSlice';
 
 // Задача для этого компонента:
 // Фильтры должны формироваться на основании загруженных данных
