@@ -3,7 +3,7 @@ import { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSelector } from '@reduxjs/toolkit'
 
-import { fetchHeroes, deleteHero } from '../../actions';
+import {fetchHeroes, hereDeleted } from './heroesSlice';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
@@ -20,7 +20,7 @@ const HeroesList = () => {
     const {request} = useHttp();
 
     useEffect(() => {
-        dispatch(fetchHeroes(request));
+        dispatch(fetchHeroes());
         // eslint-disable-next-line
     }, []);
 
@@ -28,10 +28,13 @@ const HeroesList = () => {
     // При клике на "крестик" идет удаление персонажа из общего состояния
     // Усложненная задача:
     // Удаление идет и с json файла при помощи метода DELETE
-	const onDelete = useCallback((heroId) => {
-        dispatch(deleteHero(request, heroId))
+    const onDelete = useCallback((id) => {
+        request(`http://localhost:3001/heroes/${id}`, "DELETE")
+            .then(data => console.log(data, 'Deleted'))
+            .then(dispatch(hereDeleted(id)))
+            .catch(err => console.log(err));
         // eslint-disable-next-line
-	}, [request])
+    }, [request]);
 
     if (heroesLoadingStatus === "loading") {
         return <Spinner/>;

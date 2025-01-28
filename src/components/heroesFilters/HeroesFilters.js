@@ -3,7 +3,7 @@ import classNames from 'classnames';
 
 import Spinner from '../spinner/Spinner';
 
-import { activeFilterChanged } from '../heroesFilters/filtersSlice';
+import { filtersActiveFilterChanged } from '../heroesFilters/filtersSlice';
 
 // Задача для этого компонента:
 // Фильтры должны формироваться на основании загруженных данных
@@ -29,7 +29,7 @@ const HeroesFilters = () => {
                     key={i}
                     className={className}
                     aria-pressed="true"
-                    onClick={() => dispatch(activeFilterChanged(id))}
+                    onClick={() => dispatch(filtersActiveFilterChanged(id))}
                 >{name}</button>
     });
 

@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import {useHttp} from '../../hooks/http.hook';
 import Spinner from '../spinner/Spinner';
-import { heroesFetching, heroesFetchingError, heroAdded } from '../heroesList/heroesSlice';
+import { heroAdded } from '../heroesList/heroesSlice';
 
 // Задача для этого компонента:
 // Реализовать создание нового героя с введенными данными. Он должен попадать
@@ -25,10 +25,9 @@ const HeroesAddForm = () => {
     const onSaveNewHero = (hero) => {
         hero['id'] = uuidv4();
 
-        dispatch(heroesFetching());
         request("http://localhost:3001/heroes", "POST", JSON.stringify(hero))
             .then(dispatch(heroAdded(hero)))
-            .catch(() => dispatch(heroesFetchingError()));
+            .catch((error) => console.log(error));
     }
 
     if (filtersLoadingStatus === "loading") {
