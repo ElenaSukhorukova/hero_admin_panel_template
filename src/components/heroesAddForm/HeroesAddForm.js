@@ -3,11 +3,13 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { v4 as uuidv4 } from 'uuid';
 
-import {useHttp} from '../../hooks/http.hook';
-import Spinner from '../spinner/Spinner';
-import { heroAdded } from '../heroesList/heroesSlice';
-import { selectAll } from '../heroesFilters/filtersSlice';
 import store from '../../store';
+
+// import {useHttp} from '../../hooks/http.hook';
+import Spinner from '../spinner/Spinner';
+// import { heroAdded } from '../heroesList/heroesSlice';
+import { selectAll } from '../heroesFilters/filtersSlice';
+import { useCreateHeroMutation } from '../../api/apiSlice';
 
 // Задача для этого компонента:
 // Реализовать создание нового героя с введенными данными. Он должен попадать
@@ -20,17 +22,20 @@ import store from '../../store';
 // данных из фильтров
 
 const HeroesAddForm = () => {
+    const [createHero, {isLoading, isError}] = useCreateHeroMutation();
+
     const {filtersLoadingStatus} = useSelector(state => state.filters);
     const filters = selectAll(store.getState());
-    const dispatch = useDispatch();
-    const {request} = useHttp();
+    // const dispatch = useDispatch();
+    // const {request} = useHttp();
 
     const onSaveNewHero = (hero) => {
         hero['id'] = uuidv4();
 
-        request("http://localhost:3001/heroes", "POST", JSON.stringify(hero))
-            .then(dispatch(heroAdded(hero)))
-            .catch((error) => console.log(error));
+        createHero(hero).unwrap();
+        // request("http://localhost:3001/heroes", "POST", JSON.stringify(hero))
+        //     .then(dispatch(heroAdded(hero)))
+        //     .catch((error) => console.log(error));
     }
 
     if (filtersLoadingStatus === "loading") {
