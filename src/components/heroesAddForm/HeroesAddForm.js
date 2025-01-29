@@ -6,6 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 import {useHttp} from '../../hooks/http.hook';
 import Spinner from '../spinner/Spinner';
 import { heroAdded } from '../heroesList/heroesSlice';
+import { selectAll } from '../heroesFilters/filtersSlice';
+import store from '../../store';
 
 // Задача для этого компонента:
 // Реализовать создание нового героя с введенными данными. Он должен попадать
@@ -18,7 +20,8 @@ import { heroAdded } from '../heroesList/heroesSlice';
 // данных из фильтров
 
 const HeroesAddForm = () => {
-    const {filters, filtersLoadingStatus} = useSelector(state => state.filters);
+    const {filtersLoadingStatus} = useSelector(state => state.filters);
+    const filters = selectAll(store.getState());
     const dispatch = useDispatch();
     const {request} = useHttp();
 

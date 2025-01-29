@@ -13,12 +13,6 @@
       "element": "wind"
     },
     {
-      "id": 3,
-      "name": "Морской герой",
-      "description": "Как аквамен, но не из DC",
-      "element": "water"
-    },
-    {
       "name": "New Hero",
       "description": "I'm the best worker",
       "element": "fire",

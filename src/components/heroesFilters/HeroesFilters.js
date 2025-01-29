@@ -3,7 +3,8 @@ import classNames from 'classnames';
 
 import Spinner from '../spinner/Spinner';
 
-import { filtersActiveFilterChanged } from '../heroesFilters/filtersSlice';
+import { filtersActiveFilterChanged, selectAll } from '../heroesFilters/filtersSlice';
+import store from '../../store';
 
 // Задача для этого компонента:
 // Фильтры должны формироваться на основании загруженных данных
@@ -13,7 +14,8 @@ import { filtersActiveFilterChanged } from '../heroesFilters/filtersSlice';
 // Представьте, что вы попросили бэкенд-разработчика об этом
 
 const HeroesFilters = () => {
-    const {filters, activeFilter, filtersLoadingStatus} = useSelector(state => state.filters);
+    const {activeFilter, filtersLoadingStatus} = useSelector(state => state.filters);
+    const filters = selectAll(store.getState());
     const dispatch = useDispatch();
 
     if (filtersLoadingStatus === "loading") {
